@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html>
+<style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+
+<body>
+  <h1>Columbia Eats!</h1>
+  <div>
+    <h2>Search</h2>
+    <form method="POST" action="/search">
+        <p>By tag:
+            <select name="Type" id="Tags">
+                <option value="Blank"></option>
+                <option value="American">American</option>
+            </select>
+        </p>
+        <p>Name of eatery <input type="text" name="name"> <input type="submit" value="Search"></p>
+    </form>
+    </div>
+
+    <div>
+        <h2>Find your to-try list</h2>
+        <form method="POST" action="/search">
+            <p>Your username: <input type="text" name="name"> <input type="submit" value="Search"></p>
+        </form>
+    </div>
+
+    <div>{{data}}</div>
+
+    <div>
+    {% for n in data %}
+    <div>{{n}}</div>
+    {% endfor %}
+    </div>
+
+    <br>
+    
+<br>
+<div>
+    <h2>Insert to Database</h2>
+    <form method="POST" action="/add_user"> <!--Reroute to same homepage -->
+        <p>Eatery name: <input type="text" name="name"> </p>
+        <p>Is it open?
+            <select name="Type" id="is_open">
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+            </select>
+        </p>
+        <p>Location <input type="text" name="location"></p>
+            <p>Indoor/Outdoor/Both
+                <select name="Type" id="Tags">
+                    <option value="indoor">Indoor</option>
+                    <option value="outdoor">Outdoor</option>
+                    <option value="outdoor">Both</option>
+                </select>
+            </p>
+        <p>Hours <input type="text" name="hours"></p>
+        <p>Eatery type
+            <select name="Type" id="e_type">
+                <option value="cafe">Cafe</option>
+                <option value="coffee_shop">Coffee shop</option>
+                <option value="bakery">Bakery</option>
+                <option value="bar">Bar</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="food_truck">Food truck</option>
+                <option value="fastfood">Fastfood</option>
+            </select>
+        </p>
+        <p>Seating <input type="int" name="loc"></p>
+        <p>Bathroom
+            <select name="Type" id="bathroom">
+                <option value="public">Public</option>
+                <option value="passcode_needed">Passcode needed</option>
+                <option value="none">None</option>
+            </select>
+        </p>
+            
+        <br><br>
+        <input type="submit" value="Add"></p>
+            
+    </form>
+</div>
+<div>
+    <h2>Create user profile</h2>
+    <form method="POST" action="/add_user"> <!--Reroute to same homepage -->
+        <p>New username: <input type="text" name="name"> </p>
+        <p>Affiliation to Columbia: 
+            <select name="Type" id="Tags">
+                <option value="Blank"></option>
+                <option value="Student">Student</option>
+                <option value="Faculty">Faculty</option>
+                <option value="Staff">Staff</option>
+            </select>
+        </p>
+        <p>Biography: <input type="text" name="bio">
+            <br><br>
+            <input type="submit" value="Add"></p>
+    </form>
+</div>
+
+</body>
+
+
+</html>
