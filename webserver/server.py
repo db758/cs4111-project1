@@ -112,7 +112,10 @@ def index():
   #
   # example of a database query
   #
-  cursor = g.conn.execute("SELECT name FROM test")
+
+  #debasmita: attempting code for rendering to-try lists here 
+  username = request.form['name']
+  cursor = g.conn.execute("SELECT name FROM Eateries, To_Try_List WHERE To_Try_List.eid = Eateries.eid AND To_Try_List.username = %s", username)
   names = []
   for result in cursor:
     names.append(result['name'])  # can also be accessed using result[0]
@@ -145,6 +148,10 @@ def index():
   #     {% endfor %}
   #
   context = dict(data = names)
+  {% for n in data %}
+  <div>{{n}}</div>
+  {% endfor %}
+
 
 
   #
