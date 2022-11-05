@@ -127,6 +127,54 @@ def search_to_try_list():
   return render_template("index.html", **context) # index.html?
 
 
+@app.route('/add_eatery/', methods=['GET', 'POST'])
+def add_eatery():
+  
+  if request.method == 'GET':
+    return render_template("index.html")
+
+  if request.method == 'POST':
+    username = request.form['username']
+    eatery_name = request.form['eatery_name']
+    is_open = request.form['is_open']
+    location = request.form['location']
+    is_indoor = request.form['is_indoor']
+    hours = request.form['hours']
+    e_type = request.form['e_type']
+    seating = request.form['seating']
+    bathroom = request.form['bathroom']
+
+    grant = g.conn.execute("GRANT INSERT ON Eateries to %s", username)
+    grant.close()
+    cursor = g.conn.execute("INSERT INTO Eateries VALUES(DEFAULT, %s, %s, %s, %s, %s, %s, %s, %s)", eatery_name, is_open, location, is_indoor, hours, e_type, seating, bathroom)
+    cursor.close()
+    revoke = g.conn.execute("REVOKE INSERT ON Eateries from %s", username)
+    revoke.close()
+
+    return render_template("index.html")
+
+
+@app.route('/add_user/', methods = ['GET', 'POST'])
+def add_user():
+
+  if request.method == 'GET':
+    return render_template("index.html")
+
+  if request.method == 'POST':
+    username = request.form['username']
+    affiliation = request.form['affiliation']
+    biography = request.form['bio']
+
+    cursor = g.conn.execute("INSERT INTO Users VALUES(%s, %s, CURRENT_TIMESTAMP(), %s)", username, affiliation, biography)
+    cursor.close()
+
+    cursor = g.conn.execute("INSERT INTO To_Try_List VALUES(DEFAULT, 0, %s)", username) #debasmita: do we need a placeholder eatery to put on all new to try lists?
+    cursor.close()
+
+    return render_template("index.html")
+
+
+
 '''
 @app.route('/eateries_results')
 def eateries_results():

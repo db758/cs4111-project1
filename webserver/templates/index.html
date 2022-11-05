@@ -70,6 +70,7 @@
 <div>
     <h2>Insert to Database</h2>
     <form method="POST" action="/add_user"> <!--Reroute to same homepage -->
+        <p>Your username: <input type="text" name="username"> </p>
         <p>Eatery name: <input type="text" name="eatery_name"> </p>
         <p>Is it open?
             <select name="Type" id="is_open">
@@ -80,7 +81,7 @@
         </p>
         <p>Location <input type="text" name="location"></p>
             <p>Indoor/Outdoor/Both
-                <select name="Type" id="Tags">
+                <select name="Type" id="is_indoor">
                     <option value="Blank"></option>
                     <option value="indoor">Indoor</option>
                     <option value="outdoor">Outdoor</option>
@@ -100,7 +101,7 @@
                 <option value="fastfood">Fastfood</option>
             </select>
         </p>
-        <p>Seating <input type="int" name="loc"></p>
+        <p>Seating <input type="int" name="seating"></p>
         <p>Bathroom
             <select name="Type" id="bathroom">
                 <option value="Blank"></option>
@@ -120,7 +121,7 @@
     <form method="POST" action="/add_user"> <!--Reroute to same homepage -->
         <p>New username: <input type="text" name="username"> </p>
         <p>Affiliation to Columbia: 
-            <select name="Type" id="Tags">
+            <select name="Type" id="affiliation">
                 <option value="Blank"></option>
                 <option value="Student">Student</option>
                 <option value="Faculty">Faculty</option>
