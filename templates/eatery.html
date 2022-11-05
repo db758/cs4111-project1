@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+<body>
+
+<h1>Columbia Eats!</h1>
+<h2> Eatery Name [but this should come from the previous page] </h2>
+<h3> Overall Rating: [#] </h3>
+<h4> Submitted by: [username] </h4>
+<p>This eatery is: [open for business/closed down]</p>
+<p> Located at: [location] </p>
+<p> Main seating is: [is_indoor] </p>
+<p> Hours of operation: [hours] </p>
+<p> Number of seats: [seating] </p>
+<p> Bathroom status: [bathroom] </p>
+<p> Food items available here: [list below] </p>
+<p> Comments by other users: [list below] </p>
+
+<div>
+    <h2>Rate this Eatery</h2>
+    <form method="POST" action="/add_rating"> <!--Reroute to same eatery page + update overall rating -->
+        <p>Background noise level <input type="text" name="background_noise"> </p>
+        <p>Is there background noise?
+            <select name="Type" id="background_music">
+                <option value="Blank"></option>
+                <option value="Yes">Yes</option> <!--Should these be True and  False instead--->
+                <option value="No">No</option>
+            </select>
+        </p>
+        <p>Amount of Seating <input type="int" name="seating"> </p>
+        <p>Rate the atmosphere on a scale of 1 to 5 <input type="int" name="atmosphere"> </p>
+        <p>Rate the natural lighting on a scale of 1 to 5 <input type="int" name="natural_lighting"> </p>
+        
+        <input type="submit" value="Rate"></p>
+            
+    </form>
+</div>
+
+<div>
+    <h2>Comment on this Eatery</h2>
+    <form method="POST" action="/add_comment"> <!--Reroute to same eatery page + update overall rating -->
+        <p>Comment: <input type="text" name="content"> </p>
+        <p>Your username: <input type="text" name="username"> </p>
+        
+        <input type="submit" value="Comment"></p>
+            
+    </form>
+</div>
+
+</body>
+</html>
