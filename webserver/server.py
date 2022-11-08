@@ -92,7 +92,78 @@ def teardown_request(exception):
 def index():
   return render_template("index.html")
 
-#debasmita: changing this function for the to-try-list page 
+@app.route('/search_eatery/', methods = ['POST'])
+def search_eatery():
+  eatery_name = request.form['search_eatery_name']
+  tag = request.form['Tags']
+  # 1. Tag
+  if (tag != 'Blank' and eatery_name == ""):
+    #cursor = g.conn.execute('SELECT name FROM Eateries WHERE name LIKE %s', ('%'+eatery_name+'%'))
+    cursor = g.conn.execute('SELECT * FROM Contain, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid', (tag))
+  # 2. Name
+  elif (tag == 'Blank' and eatery_name != ""):
+    cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s', ('%'+eatery_name+'%'))
+  # 3. Both
+  else:
+    cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s JOIN (SELECT * FROM Contains, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid) ON eid', ('%'+eatery_name+'%',tag))
+  names = []
+  for result in cursor:
+    names.append(result[1],result[1],result[1],result[1])  # can also be accessed using result[0]
+  cursor.close()
+  context = dict(eateries=names)
+  return render_template("index.html",**context)
+
+
+@app.route('/add_to_try_list/', methods = ['POST'])
+def add_to_try_list():
+  username = request.form['add_to_try_username']
+  eatery = request.form['add_to_try_eatery']
+  cursor = g.conn.execute('SELECT DISTINCT tid FROM To_Try_List WHERE username = %s', (username))
+  tid = []
+  for result in cursor:
+    tid.append(result[0])
+  if len(tid)==0:
+    cursor = g.conn.execute('SELECT MAX(tid)+1 FROM To_Try_List')
+    newtid = []
+    for result in cursor:
+      newtid.append(result[0])
+    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+    cursor = g.conn.execute('INSERT INTO To_Try_List VALUES (%s, %s, %s)',(newtid[0],eid[0], username))
+  else:
+    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+    cursor = g.conn.execute('INSERT INTO To_Try_List VALUES (%s, %s, %s)',(tid[0],eid[0], username))
+  cursor.close()
+  return render_template("index.html")
+
+@app.route('/add_item/', methods = ['POST'])
+def add_item():
+  item = request.form['add_item_food']
+  eatery = request.form['add_item_eatery']
+  price = request.form['add_item_price']
+  cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
+  eid = []
+  for result in cursor:
+    eid.append(result[0])
+  if len(eid)==0: 
+    pass
+    # error handling
+  cursor = g.conn.execute('SELECT MAX(iid)+1 FROM Items_Sold WHERE eid = %s', (eid[0]))
+  iid = []
+  for result in cursor:
+    iid.append(result[0])
+  if iid[0] == None:
+    iid[0] = 1  
+  
+  cursor = g.conn.execute('INSERT INTO Items_Sold VALUES (%s, %s, %s, %s)',(iid[0],price,item,eid[0]))
+  cursor.close()
+  return render_template("index.html")
+
 
 @app.route('/search_to_try_list/', methods=['GET','POST'])
 def search_to_try_list():
@@ -141,12 +212,12 @@ def add_eatery():
     seating = request.form['seating']
     bathroom = request.form['bathroom']
 
-    grant = g.conn.execute("GRANT INSERT ON Eateries to %s", username)
-    grant.close()
-    cursor = g.conn.execute("INSERT INTO Eateries VALUES(DEFAULT, %s, %s, %s, %s, %s, %s, %s, %s)", eatery_name, is_open, location, is_indoor, hours, e_type, seating, bathroom)
+    # grant = g.conn.execute("GRANT INSERT ON Eateries to %s", username)
+    # grant.close()
+    cursor = g.conn.execute("INSERT INTO Eateries VALUES(DEFAULT, %s, %s, %s, %s, %s, %s, %s, %s)", (eatery_name, is_open, location, is_indoor, hours, e_type, seating, bathroom))
     cursor.close()
-    revoke = g.conn.execute("REVOKE INSERT ON Eateries from %s", username)
-    revoke.close()
+    # revoke = g.conn.execute("REVOKE INSERT ON Eateries from %s", username)
+    # revoke.close()
 
     return render_template("index.html")
 
@@ -162,14 +233,15 @@ def add_user():
     affiliation = request.form['affiliation']
     biography = request.form['bio']
 
-    cursor = g.conn.execute("INSERT INTO Users VALUES(%s, %s, CURRENT_TIMESTAMP(), %s)", username, affiliation, biography)
+    cursor = g.conn.execute("INSERT INTO Users VALUES(%s, %s, DEFAULT, %s)", (username, affiliation, biography))
     cursor.close()
 
-    cursor = g.conn.execute("INSERT INTO To_Try_List VALUES(DEFAULT, 0, %s)", username) #debasmita: do we need a placeholder eatery to put on all new to try lists?
-    cursor.close()
+    # cursor = g.conn.execute("INSERT INTO To_Try_List VALUES(DEFAULT, 0, %s)", username) #debasmita: do we need a placeholder eatery to put on all new to try lists?
+    # cursor.close()
 
     return render_template("index.html")
 
+    # NEED EXCEPTION HANDLING
 
 
 '''

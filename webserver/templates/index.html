@@ -13,9 +13,9 @@
   <h1>Columbia Eats!</h1>
   <div>
     <h2>Search</h2>
-    <form method="POST" action="/search">
+    <form method="POST" action="/search_eatery/">
         <p>By tag:
-            <select name="Type" id="Tags"> <!--maybe change id to value-->
+            <select name="Tags"> <!--maybe change id to value-->
                 <option value="Blank"></option>
                 <option value="American">American</option>
                 <option value="Chinese">Chinese</option>
@@ -44,9 +44,15 @@
                 <option value="Brunch">Brunch</option>
             </select>
         </p>
-        <!--updated name="name" to name="eatery_name" to avoid conflicts with other values-->
-        <p>Name of eatery <input type="text" name="eatery_name"> <input type="submit" value="Search"></p>
+        <p>Name of eatery <input type="text" name="search_eatery_name"> <input type="submit" value="Search"></p>
     </form>
+
+    <div>
+        {% for n in eateries %}
+        <div>{{n}}</div>
+        {% endfor %}
+    </div>
+
     </div>
 
     <div>
@@ -63,23 +69,42 @@
     </div>
 
     <br>
-    
-<br>
+    <br>
+
+    <div>
+        <h2>Add to to-try list</h2>
+        <form method="POST" action="/add_to_try_list">
+            <p>Your username: <input type="text" name="add_to_try_username"> </p>
+            <p>Eatery name: <input type="text" name="add_to_try_eatery"> <input type="submit" value="add_to_try_eatery"></p>
+        </form>
+    </div>
+
+
+    <div>
+        <h2>Add food item to eatery</h2>
+        <form method="POST" action="/add_item">
+            <p>Eatery name: <input type="text" name="add_item_eatery"> </p>
+            <p>Food name: <input type="text" name="add_item_food"></p>
+            <p>Price: <input type="text" name="add_item_price"></p>
+            <input type="submit" value="add_item">
+        </form>
+    </div>
+
 <div>
     <h2>Insert to Database</h2>
-    <form method="POST" action="/add_user"> <!--Reroute to same homepage -->
+    <form method="POST" action="/add_eatery"> <!--Reroute to same homepage -->
         <p>Your username: <input type="text" name="username"> </p>
         <p>Eatery name: <input type="text" name="eatery_name"> </p>
         <p>Is it open?
-            <select name="Type" id="is_open">
+            <select name="is_open">
                 <option value="Blank"></option>
-                <option value="open">Open</option>
-                <option value="closed">Closed</option>
+                <option value=True>Open</option>
+                <option value=False>Closed</option>
             </select>
         </p>
         <p>Location <input type="text" name="location"></p>
             <p>Indoor/Outdoor/Both
-                <select name="Type" id="is_indoor">
+                <select name="is_indoor">
                     <option value="Blank"></option>
                     <option value="indoor">Indoor</option>
                     <option value="outdoor">Outdoor</option>
@@ -88,7 +113,7 @@
             </p>
         <p>Hours <input type="text" name="hours"></p>
         <p>Eatery type
-            <select name="Type" id="e_type">
+            <select name="e_type">
                 <option value="Blank"></option>
                 <option value="cafe">Cafe</option>
                 <option value="coffee_shop">Coffee shop</option>
@@ -101,7 +126,7 @@
         </p>
         <p>Seating <input type="int" name="seating"></p>
         <p>Bathroom
-            <select name="Type" id="bathroom">
+            <select name="bathroom">
                 <option value="Blank"></option>
                 <option value="public">Public</option>
                 <option value="passcode_needed">Passcode needed</option>
@@ -119,7 +144,7 @@
     <form method="POST" action="/add_user"> <!--Reroute to same homepage -->
         <p>New username: <input type="text" name="username"> </p>
         <p>Affiliation to Columbia: 
-            <select name="Type" id="affiliation">
+            <select name= "affiliation">
                 <option value="Blank"></option>
                 <option value="Student">Student</option>
                 <option value="Faculty">Faculty</option>
