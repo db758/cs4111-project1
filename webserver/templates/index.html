@@ -15,7 +15,7 @@
     <h2>Search</h2>
     <form method="POST" action="/search">
         <p>By tag:
-            <select name="Type" id="Tags">
+            <select name="Type" id="Tags"> <!--maybe change id to value-->
                 <option value="Blank"></option>
                 <option value="American">American</option>
                 <option value="Chinese">Chinese</option>
@@ -55,8 +55,6 @@
             <p>Your username: <input type="text" name="search_username"> <input type="submit" value="search_username"></p>
         </form>
     </div>
-
-    <div>{{data}}</div>
 
     <div>
     {% for n in data %}

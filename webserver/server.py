@@ -92,7 +92,6 @@ def teardown_request(exception):
 def index():
   return render_template("index.html")
 
-
 #debasmita: changing this function for the to-try-list page 
 
 @app.route('/search_to_try_list/', methods=['GET','POST'])
@@ -108,21 +107,19 @@ def search_to_try_list():
   # GET - when page reloads
   if request.method == 'GET': # runs when reload webpage
     return render_template("index.html") # return default homepage
+    # redirects to
   
   # POST method
   if request.method =='POST':
-
     #debasmita: attempting code for rendering to-try lists here 
-    username = request.form['search_username']# TODO this does not work
+    username = request.form['search_username']
     # debugged -> problem was that the name of the submit button form was not search_username
-    print username
     cursor = g.conn.execute("SELECT Eateries.name FROM Eateries, To_Try_List WHERE To_Try_List.eid = Eateries.eid AND To_Try_List.username = %s", username)
     names = []
     for result in cursor:
       names.append(result['name'])  # can also be accessed using result[0]
     cursor.close()
   
-
     context = dict(data = names)
   return render_template("index.html", **context) # index.html?
 
