@@ -210,6 +210,28 @@ def rate_eatery():
   cursor.close()
   return render_template("index.html")
 
+@app.route('/comment_eatery/')
+def comment_eatery():
+  username = request.form['comment_eatery_username']
+  eatery = request.form['comment_eatery_eatery']
+  content = request.form['comment_eatery_comment']
+  cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
+  eid = []
+  for result in cursor:
+    eid.append(result[0])
+  if len(eid)==0: 
+    pass
+    # display error message about exact spelling and casing of eatery
+  cursor = g.conn.execute('SELECT MAX(cid)+1 FROM Comments_Submitted_C')
+    newcid = []
+    for result in cursor:
+      newcid.append(result[0])
+  cid = newcid[0]
+  cursor = g.conn.execute('INSERT INTO Comments_Submitted_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, username))
+  cursor = g.conn.execute('INSERT INTO Comments_About_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, eid[0]))
+  cursor.close()
+  render_template("index.html")
+
 
 @app.route('/search_to_try_list/', methods=['GET','POST'])
 def search_to_try_list():
