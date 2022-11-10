@@ -101,8 +101,62 @@
         </form>
     </div>
 
+    <div>
+        <h2>Rate an existing eatery </h2>
+        <form method="POST" action="/rate_eatery">
+            <p>Your username: <input type="text" name="rate_eatery_username"> </p>
+            <p>Eatery name: <input type="text" name="rate_eatery_eatery"> </p>
+            <p>Level of background noise:
+                <select name="rate_background_noise">
+                    <option value="Blank"></option>
+                    <option value="low">Low</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="high">High</option>
+                </select>
+            </p>
+            <p>Is there background music?
+                <select name="rate_background_music">
+                    <option value="Blank"></option>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </p>
+            <p>Rate the seating
+                <select name="rate_seating">
+                    <option value="Blank"></option>
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                </select>
+            </p>
+            <p>Rate the atmosphere
+                <select name="rate_atmosphere">
+                    <option value="Blank"></option>
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                </select>
+            </p>
+            <p>Rate the level of natural lighting
+                <select name="rate_natural_lighting">
+                    <option value="Blank"></option>
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                </select>
+            </p>
+            <input type="submit" value="rate_eatery">
+        </form>
+    </div>
+
 <div>
-    <h2>Add an eatery to the app</h2>
+    <h2>Add a new eatery to the app</h2>
     <form method="POST" action="/add_eatery"> <!--Reroute to same homepage -->
         <p>Your username: <input type="text" name="username"> </p>
         <p>Eatery name: <input type="text" name="eatery_name"> </p>

@@ -190,6 +190,26 @@ def rate_item():
       cursor.close()
       return render_template("index.html")
 
+@app.route('/rate_eatery/', methods = ['POST'])
+def rate_eatery():
+  username = request.form['rate_eatery_username']
+  eatery = request.form['rate_eatery_eatery']
+  bg_noise = request.form['rate_background_noise']
+  bg_music = request.form['rate_background_music']
+  seating = request.form['rate_seating']
+  atmosphere = request.form['rate_atmosphere']
+  lighting = request.form['rate_natural_lighting']
+  cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
+  eid = []
+  for result in cursor:
+    eid.append(result[0])
+  if len(eid)==0: 
+    pass
+    # display error message about exact spelling and casing of eatery
+  cursor = g.conn.execute('INSERT INTO Ratings_About_Submitted VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, %s)', (bg_noise, bg_music, seating, atmosphere, lighting, eid[0], username))
+  cursor.close()
+  return render_template("index.html")
+
 
 @app.route('/search_to_try_list/', methods=['GET','POST'])
 def search_to_try_list():
