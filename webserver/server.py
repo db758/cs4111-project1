@@ -164,6 +164,32 @@ def add_item():
   cursor.close()
   return render_template("index.html")
 
+@app.route('/rate_item/', methods = ['POST'])
+def rate_item():
+  item = request.form['rate_item_food']
+  eatery = request.form['rate_item_eatery']
+  rating = request.form['rate_item_rating']
+  username = request.form['rate_item_username']
+  cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
+  eid = []
+  for result in cursor:
+    eid.append(result[0])
+  if len(eid)==0: 
+    pass
+    # display error message about exact spelling and casing of eatery
+  else:
+    cursor = g.conn.execute('SELECT iid FROM Items_Sold WHERE eid = %s AND name = %s', (eid[0], item))
+    iid = []
+    for result in cursor:
+      iid.append(result[0])
+    if iid[0]==None:
+      pass
+      # display error message about exact spelling and casing of food 
+    else:
+      cursor = g.conn.execute('INSERT INTO Rate VALUES (%s, %s, %s, %s)', (username, eid[0], iid[0], rating))
+      cursor.close()
+      return render_template("index.html")
+
 
 @app.route('/search_to_try_list/', methods=['GET','POST'])
 def search_to_try_list():

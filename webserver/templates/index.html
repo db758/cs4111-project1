@@ -12,7 +12,7 @@
 <body>
   <h1>Columbia Eats!</h1>
   <div>
-    <h2>Search</h2>
+    <h2>Search for eateries</h2>
     <form method="POST" action="/search_eatery/">
         <p>By tag:
             <select name="Tags"> <!--maybe change id to value-->
@@ -72,7 +72,7 @@
     <br>
 
     <div>
-        <h2>Add to to-try list</h2>
+        <h2>Add to your to-try list</h2>
         <form method="POST" action="/add_to_try_list">
             <p>Your username: <input type="text" name="add_to_try_username"> </p>
             <p>Eatery name: <input type="text" name="add_to_try_eatery"> <input type="submit" value="add_to_try_eatery"></p>
@@ -90,8 +90,19 @@
         </form>
     </div>
 
+    <div>
+        <h2>Rate a food item </h2>
+        <form method="POST" action="/rate_item">
+            <p>Your username: <input type="text" name="rate_item_username"> </p>
+            <p>Food name: <input type="text" name="rate_item_food"></p>
+            <p>Eatery name: <input type="text" name="rate_item_eatery"> </p>
+            <p>Your rating: <input type="text" name="rate_item_rating"></p>
+            <input type="submit" value="rate_item">
+        </form>
+    </div>
+
 <div>
-    <h2>Insert to Database</h2>
+    <h2>Add an eatery to the app</h2>
     <form method="POST" action="/add_eatery"> <!--Reroute to same homepage -->
         <p>Your username: <input type="text" name="username"> </p>
         <p>Eatery name: <input type="text" name="eatery_name"> </p>
@@ -140,7 +151,7 @@
     </form>
 </div>
 <div>
-    <h2>Create user profile</h2>
+    <h2>Create new user profile</h2>
     <form method="POST" action="/add_user"> <!--Reroute to same homepage -->
         <p>New username: <input type="text" name="username"> </p>
         <p>Affiliation to Columbia: 
