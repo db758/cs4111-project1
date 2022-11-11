@@ -95,6 +95,34 @@
             </table>
     </div>
 
+    <h2> Find food items at an eatery: </h2>
+
+    <form method="POST" action="/search_eatery_food">
+        <p> Eatery name: <input type="text" name="search_eatery_food"><input type="submit" value="search_eatery_food"></p>
+    </form>
+
+    <div>
+        <table>
+            <tr>
+                {% for a in itemsc%}
+                    <th>
+                        {{a}}
+                    </th>
+                {% endfor %}
+            </tr>
+            {% for n in items%}
+            <tr>
+                {% for a in n%}
+                    <td>
+                        {{a}}
+                    </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            </table>
+    </div>
+
+
     <h2> Find comments on an eatery: </h2>
 
     <form method="POST" action="/search_eatery_comment">
