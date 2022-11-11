@@ -175,20 +175,26 @@ def rate_item():
   for result in cursor:
     eid.append(result[0])
   if len(eid)==0: 
-    pass
+    return render_template("error.html")
     # display error message about exact spelling and casing of eatery
   else:
     cursor = g.conn.execute('SELECT iid FROM Items_Sold WHERE eid = %s AND name = %s', (eid[0], item))
     iid = []
     for result in cursor:
       iid.append(result[0])
-    if iid[0]==None:
-      pass
+    if len(iid)==0:
+      return render_template("error.html")
       # display error message about exact spelling and casing of food 
+      return render_template()
     else:
-      cursor = g.conn.execute('INSERT INTO Rate VALUES (%s, %s, %s, %s)', (username, eid[0], iid[0], rating))
-      cursor.close()
-      return render_template("index.html")
+      try:
+        cursor = g.conn.execute('INSERT INTO Rate VALUES (%s, %s, %s, %s)', (username, eid[0], iid[0], rating))
+        # need to check for uniqueness
+        cursor.close()
+        return redirect("/")
+      except:
+        redirect("/")
+        return render_template("error.html")
 
 @app.route('/rate_eatery/', methods = ['POST'])
 def rate_eatery():
