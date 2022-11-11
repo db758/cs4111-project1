@@ -147,7 +147,7 @@ def search_eatery_comment():
       eid.append(result[0])
   except:
     return render_template("error.html")
-  cursor = g.conn.execute('SELECT content, username, when_commented FROM Comments_About_C JOIN Comments_Submitted_C ON cid WHERE eid=%s', (eid[0]))
+  cursor = g.conn.execute('SELECT A.content, B.username, A.when_commented FROM Comments_About_C as A, Comments_Submitted_C as B WHERE eid=%s AND A.cid = B.cid', (eid[0]))
 
   names = []
   commentc = ("Comment:", "Username", "Time of comment")
