@@ -141,7 +141,7 @@ def add_to_try_list():
   cursor.close()
   return render_template("index.html")
 
-@app.route('/add_item/', methods = ['POST'])
+@app.route('/add_item/', methods = ['POST']) # KEVIN: Error, list index out of range
 def add_item():
   item = request.form['add_item_food']
   eatery = request.form['add_item_eatery']
@@ -210,7 +210,7 @@ def rate_eatery():
   cursor.close()
   return render_template("index.html")
 
-@app.route('/comment_eatery/')
+@app.route('/comment_eatery/', methods = ['POST'])
 def comment_eatery():
   username = request.form['comment_eatery_username']
   eatery = request.form['comment_eatery_eatery']
@@ -223,14 +223,14 @@ def comment_eatery():
     pass
     # display error message about exact spelling and casing of eatery
   cursor = g.conn.execute('SELECT MAX(cid)+1 FROM Comments_Submitted_C')
-    newcid = []
-    for result in cursor:
-      newcid.append(result[0])
+  newcid = []
+  for result in cursor:
+    newcid.append(result[0])
   cid = newcid[0]
   cursor = g.conn.execute('INSERT INTO Comments_Submitted_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, username))
   cursor = g.conn.execute('INSERT INTO Comments_About_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, eid[0]))
   cursor.close()
-  render_template("index.html")
+  return render_template("index.html")
 
 
 @app.route('/search_to_try_list/', methods=['GET','POST'])
