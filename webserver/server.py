@@ -150,11 +150,31 @@ def search_eatery_comment():
   cursor = g.conn.execute('SELECT A.content, B.username, A.when_commented FROM Comments_About_C as A, Comments_Submitted_C as B WHERE eid=%s AND A.cid = B.cid', (eid[0]))
 
   names = []
-  commentc = ("Comment:", "Username", "Time of comment")
+  commentc = ("Comment", "Username", "Time of comment")
   for result in cursor:
     names.append(result[:3])  
 
   context = dict(comments = names, commentc=commentc)
+  cursor.close()
+  return render_template("index.html", **context)
+
+@app.route('search_eatery_food/', methods = ['POST'])
+def search_eatery_food():
+  eatery = request.form['search_eatery_food']
+  try:
+    cursor = g.conn.execute('SELECT eid from Eateries WHERE name=%s', (eatery))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+  except:
+    return render_template("error.html")
+  cursor = g.conn.execute('SELECT Items_Sold.name, Items_Sold.price, AVG(Rate.rating) FROM Items_Sold, Rate WHERE eid = %s AND Items_Sold.eid=Rate.eid AND Items_Sold.iid = Rate.iid GROUP BY Rate.iid, Rate.eid' , (eid[0]))
+
+  names = []
+  itemsc = ("Name", "Price", "Average Rating")
+  for result in cursor:
+    names.append(result[:3])
+  context = dict(items = names, itemsc=itemsc)
   cursor.close()
   return render_template("index.html", **context)
 
