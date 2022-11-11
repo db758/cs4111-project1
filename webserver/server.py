@@ -98,7 +98,7 @@ def search_eatery():
   tag = request.form['Tags']
   # 1. Tag
   if (tag != 'Blank' and eatery_name == ""):
-    cursor = g.conn.execute('SELECT * FROM Contain, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid', (tag))
+    cursor = g.conn.execute('SELECT Eateries.eid, name, is_open, location, is_indoor, hours, e_type, seating, bathroom FROM Contain, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid', (tag))
   # 2. Name
   elif (tag == 'Blank' and eatery_name != ""):
     cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s', ('%'+eatery_name+'%'))
@@ -107,7 +107,8 @@ def search_eatery():
     cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s JOIN (SELECT * FROM Contains, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid) ON eid', ('%'+eatery_name+'%',tag))
   names = []
   for result in cursor:
-    names.append(result[1],result[1],result[1],result[1])  # can also be accessed using result[0]
+    names.append(result[1:])  # can also be accessed using result[0]
+  print names
   cursor.close()
   context = dict(eateries=names)
   return render_template("index.html",**context)
