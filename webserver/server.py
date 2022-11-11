@@ -99,6 +99,7 @@ def search_eatery():
   # 1. Tag
   if (tag != 'Blank' and eatery_name == ""):
     cursor = g.conn.execute('SELECT Eateries.eid, name, is_open, location, is_indoor, hours, e_type, seating, bathroom FROM Contain, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid', (tag))
+
   # 2. Name
   elif (tag == 'Blank' and eatery_name != ""):
     cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s', ('%'+eatery_name+'%'))
@@ -112,6 +113,49 @@ def search_eatery():
   cursor.close()
   context = dict(eateries=names)
   return render_template("index.html",**context)
+
+@app.route('/search_eatery_rating/', methods = ['POST'])
+def search_eatery_rating():
+  eatery = request.form['search_eatery_rating']
+  try:
+    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+  except:
+    return render_template("error.html")
+  cursor = g.conn.execute('SELECT AVG(seating), AVG(atmosphere), AVG(natural_lighting) FROM Ratings_About_Submitted WHERE eid=%s', (eid[0]))
+  cursor.close()
+
+  names = []
+  for result in cursor:
+    names.append(result[0])  
+
+
+  context = dict(ratings = names)
+  return render_template("index.html", **context)
+
+@app.route('/search_eatery_comment/', methods = ['POST'])
+def search_eatery_comment():
+  eatery = request.form['search_eatery_comment']
+  try:
+    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+  except:
+    return render_template("error.html")
+  cursor = g.conn.execute('SELECT content FROM Comments_About_C WHERE eid=%s', (eid[0]))
+  cursor.close()
+
+  names = []
+  for result in cursor:
+    names.append(result[0])  
+
+
+  context = dict(comments = names)
+  return render_template("index.html", **context)
+
 
 
 @app.route('/add_to_try_list/', methods = ['POST'])

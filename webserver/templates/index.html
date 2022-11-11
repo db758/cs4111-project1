@@ -53,7 +53,18 @@
         {% endfor %}
     </div>
 
-    </div>
+    <h2> Find rating of an eatery: </h2>
+
+    <form method="POST" action="/search_eatery_rating">
+        <p> Eatery name: <input type="text" name="search_eatery_rating"><input type="submit" value="search_eatery_rating"></p>
+    </form>
+
+    <h2> Find comments on an eatery: </h2>
+
+    <form method="POST" action="/search_eatery_comment">
+        <p> Eatery name: <input type="text" name="search_eatery_comment"><input type="submit" value="search_eatery_comment"></p>
+    </form>
+
 
     <div>
         <h2>Find your to-try list</h2>
