@@ -141,7 +141,7 @@ def add_to_try_list():
   cursor.close()
   return redirect("/")#render_template("index.html")
 
-@app.route('/add_item/', methods = ['POST']) # KEVIN: Error, list index out of range
+@app.route('/add_item/', methods = ['POST']) 
 def add_item():
   item = request.form['add_item_food']
   eatery = request.form['add_item_eatery']
@@ -302,15 +302,13 @@ def add_user():
     affiliation = request.form['affiliation']
     biography = request.form['bio']
 
-    cursor = g.conn.execute("INSERT INTO Users VALUES(%s, %s, DEFAULT, %s)", (username, affiliation, biography))
-    cursor.close()
+    try:
+      cursor = g.conn.execute("INSERT INTO Users VALUES(%s, %s, DEFAULT, %s)", (username, affiliation, biography))
+      cursor.close()
 
-    # cursor = g.conn.execute("INSERT INTO To_Try_List VALUES(DEFAULT, 0, %s)", username) #debasmita: do we need a placeholder eatery to put on all new to try lists?
-    # cursor.close()
-
-    return redirect("/") #render_template("index.html")
-
-    # NEED EXCEPTION HANDLING
+      return redirect("/") #render_template("index.html")
+    except:
+      return render_template("error.html")
 
 
 '''
