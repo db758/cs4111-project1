@@ -147,13 +147,14 @@ def search_eatery_comment():
       eid.append(result[0])
   except:
     return render_template("error.html")
-  cursor = g.conn.execute('SELECT content FROM Comments_About_C WHERE eid=%s', (eid[0]))
+  cursor = g.conn.execute('SELECT content, username, when_commented FROM Comments_About_C JOIN Comments_Submitted_C ON cid WHERE eid=%s', (eid[0]))
 
   names = []
+  commentc = ("Comment:", "Username", "Time of comment")
   for result in cursor:
-    names.append(result[0])  
+    names.append(result[:3])  
 
-  context = dict(comments = names)
+  context = dict(comments = names, commentc=commentc)
   cursor.close()
   return render_template("index.html", **context)
 

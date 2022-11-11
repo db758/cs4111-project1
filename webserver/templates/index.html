@@ -102,9 +102,24 @@
     </form>
 
     <div>
-        {% for n in comments%}
-        <div>{{n}}</div>
-        {% endfor %}
+        <table>
+            <tr>
+                {% for a in commentc%}
+                    <th>
+                        {{a}}
+                    </th>
+                {% endfor %}
+            </tr>
+            {% for n in comments%}
+            <tr>
+                {% for a in n%}
+                    <td>
+                        {{a}}
+                    </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            </table>
     </div>
 
     <div>
