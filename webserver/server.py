@@ -126,14 +126,15 @@ def search_eatery_rating():
   except:
     return render_template("error.html")
   cursor = g.conn.execute('SELECT AVG(seating), AVG(atmosphere), AVG(natural_lighting) FROM Ratings_About_Submitted WHERE eid=%s', (eid[0]))
-  cursor.close()
 
   names = []
+  ratingc = ("Avg. rating: seating", "Avg. rating: atmosphere", "Avg. rating: natural lighting")
   for result in cursor:
-    names.append(result[0])  
+    names.append(result[:3])  
 
 
-  context = dict(ratings = names)
+  context = dict(ratings = names, ratingc=ratingc)
+  cursor.close()
   return render_template("index.html", **context)
 
 @app.route('/search_eatery_comment/', methods = ['POST'])
@@ -147,14 +148,13 @@ def search_eatery_comment():
   except:
     return render_template("error.html")
   cursor = g.conn.execute('SELECT content FROM Comments_About_C WHERE eid=%s', (eid[0]))
-  cursor.close()
 
   names = []
   for result in cursor:
     names.append(result[0])  
 
-
   context = dict(comments = names)
+  cursor.close()
   return render_template("index.html", **context)
 
 

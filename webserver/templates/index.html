@@ -47,6 +47,8 @@
         <p>Name of eatery <input type="text" name="search_eatery_name"> <input type="submit" value="Search"></p>
     </form>
 
+    <br>
+
     <table>
     <tr>
         {% for a in headings%}
@@ -64,7 +66,7 @@
         {% endfor %}
     </tr>
     {% endfor %}
-</table>
+    </table>
 
     <h2> Find rating of an eatery: </h2>
 
@@ -72,12 +74,38 @@
         <p> Eatery name: <input type="text" name="search_eatery_rating"><input type="submit" value="search_eatery_rating"></p>
     </form>
 
+    <div>
+        <table>
+            <tr>
+                {% for a in ratingc%}
+                    <th>
+                        {{a}}
+                    </th>
+                {% endfor %}
+            </tr>
+            {% for n in ratings%}
+            <tr>
+                {% for a in n%}
+                    <td>
+                        {{a}}
+                    </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            </table>
+    </div>
+
     <h2> Find comments on an eatery: </h2>
 
     <form method="POST" action="/search_eatery_comment">
         <p> Eatery name: <input type="text" name="search_eatery_comment"><input type="submit" value="search_eatery_comment"></p>
     </form>
 
+    <div>
+        {% for n in comments%}
+        <div>{{n}}</div>
+        {% endfor %}
+    </div>
 
     <div>
         <h2>Find your to-try list</h2>
