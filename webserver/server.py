@@ -139,7 +139,7 @@ def add_to_try_list():
       eid.append(result[0])
     cursor = g.conn.execute('INSERT INTO To_Try_List VALUES (%s, %s, %s)',(tid[0],eid[0], username))
   cursor.close()
-  return render_template("index.html")
+  return redirect("/")#render_template("index.html")
 
 @app.route('/add_item/', methods = ['POST']) # KEVIN: Error, list index out of range
 def add_item():
@@ -151,8 +151,7 @@ def add_item():
   for result in cursor:
     eid.append(result[0])
   if len(eid)==0: 
-    pass
-    # error handling
+    return render_template("error.html")
   cursor = g.conn.execute('SELECT MAX(iid)+1 FROM Items_Sold WHERE eid = %s', (eid[0]))
   iid = []
   for result in cursor:
@@ -162,7 +161,7 @@ def add_item():
   
   cursor = g.conn.execute('INSERT INTO Items_Sold VALUES (%s, %s, %s, %s)',(iid[0],price,item,eid[0]))
   cursor.close()
-  return render_template("index.html")
+  return redirect("/") #render_template("index.html")
 
 @app.route('/rate_item/', methods = ['POST'])
 def rate_item():
@@ -176,7 +175,6 @@ def rate_item():
     eid.append(result[0])
   if len(eid)==0: 
     return render_template("error.html")
-    # display error message about exact spelling and casing of eatery
   else:
     cursor = g.conn.execute('SELECT iid FROM Items_Sold WHERE eid = %s AND name = %s', (eid[0], item))
     iid = []
@@ -184,7 +182,6 @@ def rate_item():
       iid.append(result[0])
     if len(iid)==0:
       return render_template("error.html")
-      # display error message about exact spelling and casing of food 
       return render_template()
     else:
       try:
@@ -210,11 +207,10 @@ def rate_eatery():
   for result in cursor:
     eid.append(result[0])
   if len(eid)==0: 
-    pass
-    # display error message about exact spelling and casing of eatery
+    return render_template("/")
   cursor = g.conn.execute('INSERT INTO Ratings_About_Submitted VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, %s)', (bg_noise, bg_music, seating, atmosphere, lighting, eid[0], username))
   cursor.close()
-  return render_template("index.html")
+  return redirect("/") #render_template("index.html")
 
 @app.route('/comment_eatery/', methods = ['POST'])
 def comment_eatery():
@@ -226,8 +222,7 @@ def comment_eatery():
   for result in cursor:
     eid.append(result[0])
   if len(eid)==0: 
-    pass
-    # display error message about exact spelling and casing of eatery
+    return render_template("/")
   cursor = g.conn.execute('SELECT MAX(cid)+1 FROM Comments_Submitted_C')
   newcid = []
   for result in cursor:
@@ -236,7 +231,7 @@ def comment_eatery():
   cursor = g.conn.execute('INSERT INTO Comments_Submitted_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, username))
   cursor = g.conn.execute('INSERT INTO Comments_About_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, eid[0]))
   cursor.close()
-  return render_template("index.html")
+  return redirect("/")#render_template("index.html")
 
 
 @app.route('/search_to_try_list/', methods=['GET','POST'])
@@ -293,7 +288,7 @@ def add_eatery():
     # revoke = g.conn.execute("REVOKE INSERT ON Eateries from %s", username)
     # revoke.close()
 
-    return render_template("index.html")
+    return redirect("/") #render_template("index.html")
 
 
 @app.route('/add_user/', methods = ['GET', 'POST'])
@@ -313,7 +308,7 @@ def add_user():
     # cursor = g.conn.execute("INSERT INTO To_Try_List VALUES(DEFAULT, 0, %s)", username) #debasmita: do we need a placeholder eatery to put on all new to try lists?
     # cursor.close()
 
-    return render_template("index.html")
+    return redirect("/") #render_template("index.html")
 
     # NEED EXCEPTION HANDLING
 
