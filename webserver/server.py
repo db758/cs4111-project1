@@ -181,7 +181,6 @@ def rate_item():
       iid.append(result[0])
     if len(iid)==0:
       return render_template("error.html")
-      return render_template()
     else:
       try:
         cursor = g.conn.execute('INSERT INTO Rate VALUES (%s, %s, %s, %s)', (username, eid[0], iid[0], rating))
@@ -189,7 +188,6 @@ def rate_item():
         cursor.close()
         return redirect("/")
       except:
-        redirect("/")
         return render_template("error.html")
 
 @app.route('/rate_eatery/', methods = ['POST'])
