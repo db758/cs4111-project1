@@ -99,7 +99,6 @@ def search_eatery():
   # 1. Tag
   if (tag != 'Blank' and eatery_name == ""):
     cursor = g.conn.execute('SELECT Eateries.eid, name, is_open, location, is_indoor, hours, e_type, seating, bathroom FROM Contain, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid', (tag))
-
   # 2. Name
   elif (tag == 'Blank' and eatery_name != ""):
     cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s', ('%'+eatery_name+'%'))
@@ -107,12 +106,14 @@ def search_eatery():
   else:
     cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s JOIN (SELECT * FROM Contains, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid) ON eid', ('%'+eatery_name+'%',tag))
   names = []
+  headings = ("Eatery name","Is open?","Location","Indoor/Outdoor","Hours","Eatery type","Number of seats","Restrooms")
+  #names.append(headings)
   for result in cursor:
     names.append(result[1:])  # can also be accessed using result[0]
-  print names
   cursor.close()
-  context = dict(eateries=names)
-  return render_template("index.html",**context)
+  context = dict(eateries=names,headings=headings)
+  return render_template("index.html", **context)
+
 
 @app.route('/search_eatery_rating/', methods = ['POST'])
 def search_eatery_rating():

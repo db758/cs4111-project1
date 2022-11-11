@@ -47,11 +47,24 @@
         <p>Name of eatery <input type="text" name="search_eatery_name"> <input type="submit" value="Search"></p>
     </form>
 
-    <div>
-        {% for n in eateries %}
-        <div>{{n}}</div>
+    <table>
+    <tr>
+        {% for a in headings%}
+            <th>
+                {{a}}
+            </th>
         {% endfor %}
-    </div>
+    </tr>
+    {% for n in eateries%}
+    <tr>
+        {% for a in n%}
+            <td>
+                {{a}}
+            </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
 
     <h2> Find rating of an eatery: </h2>
 
