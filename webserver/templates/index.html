@@ -96,7 +96,16 @@
             <p>Your username: <input type="text" name="rate_item_username"> </p>
             <p>Food name: <input type="text" name="rate_item_food"></p>
             <p>Eatery name: <input type="text" name="rate_item_eatery"> </p>
-            <p>Your rating: <input type="text" name="rate_item_rating"></p>
+            <p>Your rating: 
+                <select name="rate_item_rating">
+                    <option value="Blank"></option>
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                </select>
+            </p>
             <input type="submit" value="rate_item">
         </form>
     </div>
