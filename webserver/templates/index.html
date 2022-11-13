@@ -68,10 +68,14 @@
     {% endfor %}
     </table>
 
+    <br>
+
     <h2> Find rating of an eatery: </h2>
 
     <form method="POST" action="/search_eatery_rating">
-        <p> Eatery name: <input type="text" name="search_eatery_rating"><input type="submit" value="search_eatery_rating"></p>
+        <p> Eatery name: <input type="text" name="search_eatery_rating"></p>
+        <p> Location: <input type="text" name="search_eatery_name_location"></p>
+        <input type="submit" value="search_eatery_rating">
     </form>
 
     <div>
@@ -94,11 +98,15 @@
             {% endfor %}
             </table>
     </div>
-
+    
+    <br>
+    
     <h2> Look up food items at an eatery: </h2>
 
     <form method="POST" action="/search_eatery_food">
-        <p> Eatery name: <input type="text" name="search_eatery_food"><input type="submit" value="search_eatery_food"></p>
+        <p> Eatery name: <input type="text" name="search_eatery_food"></p>
+        <p> Location: <input type="text" name="search_eatery_food_location"></p>
+        <input type="submit" value="search_eatery_food">
     </form>
 
     <div>
@@ -122,11 +130,14 @@
             </table>
     </div>
 
+    <br>
 
     <h2> Find comments on an eatery: </h2>
 
     <form method="POST" action="/search_eatery_comment">
-        <p> Eatery name: <input type="text" name="search_eatery_comment"><input type="submit" value="search_eatery_comment"></p>
+        <p> Eatery name: <input type="text" name="search_eatery_comment"></p>
+        <p> Location: <input type="text" name="search_eatery_comment_location"></p>
+        <input type="submit" value="search_eatery_comment">
     </form>
 
     <div>
@@ -150,47 +161,16 @@
             </table>
     </div>
 
-    <div>
-        <h2>Find your to-try list</h2>
-        <form method="POST" action="/search_to_try_list">
-            <p>Your username: <input type="text" name="search_username"> <input type="submit" value="search_username"></p>
-        </form>
-    </div>
-
-    <div>
-    {% for n in data %}
-    <div>{{n}}</div>
-    {% endfor %}
-    </div>
-
-    <br>
     <br>
 
     <div>
-        <h2>Add to your to-try list</h2>
-        <form method="POST" action="/add_to_try_list">
-            <p>Your username: <input type="text" name="add_to_try_username"> </p>
-            <p>Eatery name: <input type="text" name="add_to_try_eatery"> <input type="submit" value="add_to_try_eatery"></p>
-        </form>
-    </div>
-
-
-    <div>
-        <h2>Add food item to eatery</h2>
-        <form method="POST" action="/add_item">
-            <p>Eatery name: <input type="text" name="add_item_eatery"> </p>
-            <p>Food name: <input type="text" name="add_item_food"></p>
-            <p>Price: <input type="text" name="add_item_price"></p>
-            <input type="submit" value="add_item">
-        </form>
-    </div>
-
-    <div>
-        <h2>Rate a food item </h2>
+        <h2>Add and rate a food item </h2>
         <form method="POST" action="/rate_item">
             <p>Your username: <input type="text" name="rate_item_username"> </p>
-            <p>Food name: <input type="text" name="rate_item_food"></p>
             <p>Eatery name: <input type="text" name="rate_item_eatery"> </p>
+            <p>Location: <input type="text" name="rate_item_location"></p>
+            <p>Food name: <input type="text" name="rate_item_food"></p>
+            <p>Price: <input type="text" name="add_item_price"></p>
             <p>Your rating: 
                 <select name="rate_item_rating">
                     <option value="Blank"></option>
@@ -205,11 +185,14 @@
         </form>
     </div>
 
+    <br>
+
     <div>
         <h2>Rate an existing eatery </h2>
         <form method="POST" action="/rate_eatery">
             <p>Your username: <input type="text" name="rate_eatery_username"> </p>
             <p>Eatery name: <input type="text" name="rate_eatery_eatery"> </p>
+            <p>Location: <input type="text" name="rate_eatery_location"></p>
             <p>Level of background noise:
                 <select name="rate_background_noise">
                     <option value="Blank"></option>
@@ -259,65 +242,101 @@
         </form>
     </div>
 
+    <br>
+
     <div>
         <h2>Comment on an existing eatery </h2>
         <form method="POST" action="/comment_eatery">
             <p>Your username: <input type="text" name="comment_eatery_username"> </p>
             <p>Eatery name: <input type="text" name="comment_eatery_eatery"> </p>
+            <p>Location: <input type="text" name="comment_eatery_location"></p>
             <p>Your comment: <input type="text" name="comment_eatery_comment"> </p>
             <input type="submit" value="comment_eatery">
         </form>
     </div>
 
-<div>
-    <h2>Add a new eatery to the app</h2>
-    <form method="POST" action="/add_eatery"> <!--Reroute to same homepage -->
-        <p>Your username: <input type="text" name="username"> </p>
-        <p>Eatery name: <input type="text" name="eatery_name"> </p>
-        <p>Is it open?
-            <select name="is_open">
-                <option value="Blank"></option>
-                <option value=True>Open</option>
-                <option value=False>Closed</option>
-            </select>
-        </p>
-        <p>Location <input type="text" name="location"></p>
-            <p>Indoor/Outdoor/Both
-                <select name="is_indoor">
+    <br>
+    <div>
+        <h2>Add a new eatery to the app</h2>
+        <form method="POST" action="/add_eatery"> <!--Reroute to same homepage -->
+            <p>Your username: <input type="text" name="username"> </p>
+            <p>Eatery name: <input type="text" name="eatery_name"> </p>
+            <p>Is it open?
+                <select name="is_open">
                     <option value="Blank"></option>
-                    <option value="indoor">Indoor</option>
-                    <option value="outdoor">Outdoor</option>
-                    <option value="outdoor">Both</option>
+                    <option value=True>Open</option>
+                    <option value=False>Closed</option>
                 </select>
             </p>
-        <p>Hours <input type="text" name="hours"></p>
-        <p>Eatery type
-            <select name="e_type">
-                <option value="Blank"></option>
-                <option value="cafe">Cafe</option>
-                <option value="coffee_shop">Coffee shop</option>
-                <option value="bakery">Bakery</option>
-                <option value="bar">Bar</option>
-                <option value="restaurant">Restaurant</option>
-                <option value="food_truck">Food truck</option>
-                <option value="fastfood">Fastfood</option>
-            </select>
-        </p>
-        <p>Seating <input type="int" name="seating"></p>
-        <p>Bathroom
-            <select name="bathroom">
-                <option value="Blank"></option>
-                <option value="public">Public</option>
-                <option value="passcode_needed">Passcode needed</option>
-                <option value="none">None</option>
-            </select>
-        </p>
-            
-        <br><br>
-        <input type="submit" value="Add"></p>
-            
-    </form>
-</div>
+            <p>Location <input type="text" name="location"></p>
+                <p>Indoor/Outdoor/Both
+                    <select name="is_indoor">
+                        <option value="Blank"></option>
+                        <option value="indoor">Indoor</option>
+                        <option value="outdoor">Outdoor</option>
+                        <option value="outdoor">Both</option>
+                    </select>
+                </p>
+            <p>Hours <input type="text" name="hours"></p>
+            <p>Eatery type
+                <select name="e_type">
+                    <option value="Blank"></option>
+                    <option value="cafe">Cafe</option>
+                    <option value="coffee_shop">Coffee shop</option>
+                    <option value="bakery">Bakery</option>
+                    <option value="bar">Bar</option>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="food_truck">Food truck</option>
+                    <option value="fastfood">Fastfood</option>
+                </select>
+            </p>
+            <p>Seating <input type="int" name="seating"></p>
+            <p>Bathroom
+                <select name="bathroom">
+                    <option value="Blank"></option>
+                    <option value="public">Public</option>
+                    <option value="passcode_needed">Passcode needed</option>
+                    <option value="none">None</option>
+                </select>
+            </p>
+                
+            <br><br>
+            <input type="submit" value="Add"></p>
+                
+        </form>
+    </div>
+
+    <br>
+
+    <div>
+        <h2>Find your to-try list</h2>
+        <form method="POST" action="/search_to_try_list">
+            <p>Your username: <input type="text" name="search_username"></p>
+            <input type="submit" value="search_username">
+        </form>
+    </div>
+
+    <div>
+    {% for n in data %}
+    <div>{{n}}</div>
+    {% endfor %}
+    </div>
+
+    <br>
+
+    <div>
+        <h2>Add to your to-try list</h2>
+        <form method="POST" action="/add_to_try_list">
+            <p>Your username: <input type="text" name="add_to_try_username"> </p>
+            <p>Eatery name: <input type="text" name="add_to_try_eatery"> </p>
+            <p>Location: <input type="text" name="add_to_try_location"></p>
+            <input type="submit" value="add_to_try_eatery">
+
+        </form>
+    </div>
+
+<br>
+
 <div>
     <h2>Create new user profile</h2>
     <form method="POST" action="/add_user"> <!--Reroute to same homepage -->
