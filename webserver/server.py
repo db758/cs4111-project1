@@ -112,7 +112,7 @@ def search_eatery():
   headings = ("Eatery name","Is open?","Location","Indoor/Outdoor","Hours","Eatery type","Number of seats","Restrooms")
   #names.append(headings)
   for result in cursor:
-    names.append(result[1:])  # can also be accessed using result[0]
+    names.append(result[1:])
   cursor.close()
   if len(names)==0:
     return render_template("error.html")
@@ -120,65 +120,83 @@ def search_eatery():
   return render_template("index.html", **context)
 
 
-@app.route('/search_eatery_rating/', methods = ['POST'])
+@app.route('/search_eatery_rating/', methods = ['GET','POST'])
 def search_eatery_rating():
-  eatery = request.form['search_eatery_rating']
-  cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
-  eid = []
-  for result in cursor:
-    eid.append(result[0])
-  if len(eid)==0: 
-    return render_template("error.html")
-  cursor = g.conn.execute('SELECT AVG(seating), AVG(atmosphere), AVG(natural_lighting) FROM Ratings_About_Submitted WHERE eid=%s', (eid[0]))
+  if request.method == 'GET':
+    return render_template("index.html");
+  elif request.method == 'POST':
+    eatery = request.form['search_eatery_rating']
+    location = request.form['search_eatery_name_location']
+    if len(location.strip()) == 0:
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s AND location = %s',(eatery,location))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+    if len(eid)==0: 
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT AVG(seating), AVG(atmosphere), AVG(natural_lighting) FROM Ratings_About_Submitted WHERE eid=%s', (eid[0]))
 
-  names = []
-  ratingc = ("Avg. rating: seating", "Avg. rating: atmosphere", "Avg. rating: natural lighting")
-  for result in cursor:
-    names.append(result[:3])  
+    names = []
+    ratingc = ("Avg. rating: seating", "Avg. rating: atmosphere", "Avg. rating: natural lighting")
+    for result in cursor:
+      names.append(result[:3])  
 
 
-  context = dict(ratings = names, ratingc=ratingc)
-  cursor.close()
-  return render_template("index.html", **context)
+    context = dict(ratings = names, ratingc=ratingc)
+    cursor.close()
+    return render_template("index.html", **context)
 
-@app.route('/search_eatery_comment/', methods = ['POST'])
+@app.route('/search_eatery_comment/', methods = ['GET','POST'])
 def search_eatery_comment():
-  eatery = request.form['search_eatery_comment']
-  cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
-  eid = []
-  for result in cursor:
-    eid.append(result[0])
-  if len(eid)==0:
-    return render_template("error.html")
-  cursor = g.conn.execute('SELECT A.content, B.username, A.when_commented FROM Comments_About_C as A, Comments_Submitted_C as B WHERE eid=%s AND A.cid = B.cid', (eid[0]))
+  if request.method == 'GET':
+    return render_template("index.html");
+  elif request.method == 'POST':
+    eatery = request.form['search_eatery_comment']
+    location = request.form['search_eatery_comment_location']
+    if len(location.strip()) == 0:
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s AND location = %s',(eatery,location))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+    if len(eid)==0:
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT A.content, B.username, A.when_commented FROM Comments_About_C as A, Comments_Submitted_C as B WHERE eid=%s AND A.cid = B.cid', (eid[0]))
 
-  names = []
-  commentc = ("Comment", "Username", "Time of comment")
-  for result in cursor:
-    names.append(result[:3])  
+    names = []
+    commentc = ("Comment", "Username", "Time of comment")
+    for result in cursor:
+      names.append(result[:3])  
 
-  context = dict(comments = names, commentc=commentc)
-  cursor.close()
-  return render_template("index.html", **context)
+    context = dict(comments = names, commentc=commentc)
+    cursor.close()
+    return render_template("index.html", **context)
 
-@app.route('/search_eatery_food/', methods = ['POST'])
+@app.route('/search_eatery_food/', methods = ['GET','POST'])
 def search_eatery_food():
-  eatery = request.form['search_eatery_food']
-  cursor = g.conn.execute('SELECT eid from Eateries WHERE name=%s', (eatery))
-  eid = []
-  for result in cursor:
-    eid.append(result[0])
-  if len(eid)==0:
-    return render_template("error.html")
-  cursor = g.conn.execute('SELECT Items_Sold.name, Items_Sold.price, AVG(Rate.rating) FROM Items_Sold, Rate WHERE Items_Sold.eid = %s AND Items_Sold.eid=Rate.eid AND Items_Sold.iid = Rate.iid GROUP BY Rate.iid, Rate.eid, Items_Sold.name, Items_Sold.price' , (eid[0]))
+  if request.method == 'GET':
+    return render_template("index.html");
+  elif request.method == 'POST':
+    eatery = request.form['search_eatery_food']
+    location = request.form['search_eatery_food_location']
+    if len(location.strip()) == 0:
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s AND location = %s',(eatery,location))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+    if len(eid)==0:
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT Items_Sold.name, Items_Sold.price, AVG(Rate.rating) FROM Items_Sold, Rate WHERE Items_Sold.eid = %s AND Items_Sold.eid=Rate.eid AND Items_Sold.iid = Rate.iid GROUP BY Rate.iid, Rate.eid, Items_Sold.name, Items_Sold.price' , (eid[0]))
 
-  names = []
-  itemsc = ("Name", "Price", "Average Rating")
-  for result in cursor:
-    names.append(result[:3])
-  context = dict(items = names, itemsc=itemsc)
-  cursor.close()
-  return render_template("index.html", **context)
+    names = []
+    itemsc = ("Name", "Price", "Average Rating")
+    for result in cursor:
+      names.append(result[:3])
+    context = dict(items = names, itemsc=itemsc)
+    cursor.close()
+    return render_template("index.html", **context)
 
 
 
@@ -188,6 +206,9 @@ def add_to_try_list():
     return render_template("index.html")
   elif request.method == 'POST':
     username = request.form['add_to_try_username']
+    location = request.form['add_to_try_location']
+    if len(location.strip()) == 0:
+      return render_template("error.html")
     cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
     usernames = []
     for result in cursor:
@@ -204,47 +225,35 @@ def add_to_try_list():
       newtid = []
       for result in cursor:
         newtid.append(result[0])
-      cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+      cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s AND location = %s',(eatery,location))
       eid = []
       for result in cursor:
         eid.append(result[0])
       if len(eid) == 0:
+        return render_template("error.html")
+      cursor = g.conn.execute('SELECT * FROM To_Try_List WHERE username = %s AND eid = %s', (username,eid[0]))
+      results = []
+      for result in cursor:
+        results.append(result[0])
+      if len(results) > 0:
         return render_template("error.html")
       cursor = g.conn.execute('INSERT INTO To_Try_List VALUES (%s, %s, %s)',(newtid[0],eid[0], username))
     else:
-      cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+      cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s AND location = %s',(eatery,location))
       eid = []
       for result in cursor:
         eid.append(result[0])
       if len(eid) == 0:
         return render_template("error.html")
+      cursor = g.conn.execute('SELECT * FROM To_Try_List WHERE username = %s AND eid = %s', (username,eid[0]))
+      results = []
+      for result in cursor:
+        results.append(result[0])
+      if len(results) > 0:
+        return render_template("error.html")
       cursor = g.conn.execute('INSERT INTO To_Try_List VALUES (%s, %s, %s)',(tid[0],eid[0], username))
     cursor.close()
-    return redirect("/")#render_template("index.html")
-
-@app.route('/add_item/', methods = ['POST']) 
-def add_item():
-  item = request.form['add_item_food']
-  eatery = request.form['add_item_eatery']
-  price = request.form['add_item_price']
-  cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
-  eid = []
-  for result in cursor:
-    eid.append(result[0])
-  if len(eid)==0: 
-    return render_template("error.html")
-  cursor = g.conn.execute('SELECT MAX(iid)+1 FROM Items_Sold WHERE eid = %s', (eid[0]))
-  iid = []
-  for result in cursor:
-    iid.append(result[0])
-  if iid[0] == None:
-    iid[0] = 1  
-  try:
-    cursor = g.conn.execute('INSERT INTO Items_Sold VALUES (%s, %s, %s, %s)',(iid[0],price,item,eid[0]))
-    cursor.close()
-    return redirect("/") #render_template("index.html")
-  except:
-    return render_template("error.html")
+    return redirect("/")
 
 @app.route('/rate_item/', methods = ['POST', 'GET'])
 def rate_item():
@@ -252,7 +261,11 @@ def rate_item():
     return render_template("index.html")
   else:
     item = request.form['rate_item_food']
+    price = request.form['add_item_price']
     eatery = request.form['rate_item_eatery']
+    location = request.form['rate_item_location']
+    if len(location.strip()) == 0:
+      return render_template("error.html")
     rating = request.form['rate_item_rating']
     if rating == 'Blank':
       return render_template("error.html")
@@ -263,13 +276,25 @@ def rate_item():
       usernames.append(result[0])
     if len(usernames) ==0:
       return render_template("error.html")
-    cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
+    cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s AND location = %s', (eatery,location))
     eid = []
     for result in cursor:
       eid.append(result[0])
     if len(eid)==0: 
       return render_template("error.html")
     else:
+      cursor = g.conn.execute('SELECT MAX(iid)+1 FROM Items_Sold WHERE eid = %s', (eid[0]))
+      iid = []
+      for result in cursor:
+        iid.append(result[0])
+      if iid[0] == None:
+        iid[0] = 1  
+      try:
+        cursor = g.conn.execute('INSERT INTO Items_Sold VALUES (%s, %s, %s, %s)',(iid[0],price,item,eid[0]))
+        cursor.close()
+      except:
+        return render_template("error.html")
+
       cursor = g.conn.execute('SELECT iid FROM Items_Sold WHERE eid = %s AND name = %s', (eid[0], item))
       iid = []
       for result in cursor:
@@ -285,46 +310,52 @@ def rate_item():
         except:
           return render_template("error.html")
 
-@app.route('/rate_eatery/', methods = ['POST'])
+@app.route('/rate_eatery/', methods = ['GET','POST'])
 def rate_eatery():
-  username = request.form['rate_eatery_username']
-  cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
-  usernames = []
-  for result in cursor:
-    usernames.append(result[0])
-  if len(usernames) ==0:
-    return render_template("error.html")
-  eatery = request.form['rate_eatery_eatery']
-  bg_noise = request.form['rate_background_noise']
-  bg_music = request.form['rate_background_music']
-  seating = request.form['rate_seating']
-  atmosphere = request.form['rate_atmosphere']
-  lighting = request.form['rate_natural_lighting']
-  cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
-  eid = []
-  for result in cursor:
-    eid.append(result[0])
-  if len(eid)==0: 
-    return render_template("error.html")
-  if bg_noise == "Blank" or bg_music == "Blank" or seating == "Blank" or atmosphere == "Blank" or lighting == "Blank":
-    return render_template("error.html")
-  cursor = g.conn.execute('SELECT MAX(rid)+1 FROM Ratings_About_Submitted')
-  newrid = []
-  for result in cursor:
-    newrid.append(result[0])
-  if len(newrid) == 0:
-    rid = 1
-  else:
-    rid = newrid[0]
-  cursor = g.conn.execute('SELECT * FROM Ratings_About_Submitted WHERE username =%s AND eid =%s', (username, eid[0]))
-  results = []
-  for result in cursor:
-    results.append(result[0])
-  if len(results) >0:
-    return render_template("error.html")
-  cursor = g.conn.execute('INSERT INTO Ratings_About_Submitted VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (rid, bg_noise, bg_music, seating, atmosphere, lighting, eid[0], username))
-  cursor.close()
-  return redirect("/") #render_template("index.html")
+  if request.method == 'GET':
+    return render_template("index.html");
+  elif request.method == 'POST':
+    username = request.form['rate_eatery_username']
+    cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
+    usernames = []
+    for result in cursor:
+      usernames.append(result[0])
+    if len(usernames) ==0:
+      return render_template("error.html")
+    eatery = request.form['rate_eatery_eatery']
+    location = request.form['rate_eatery_location']
+    if len(location.strip()) == 0:
+      return render_template("error.html")
+    bg_noise = request.form['rate_background_noise']
+    bg_music = request.form['rate_background_music']
+    seating = request.form['rate_seating']
+    atmosphere = request.form['rate_atmosphere']
+    lighting = request.form['rate_natural_lighting']
+    cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s AND location = %s', (eatery,location))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+    if len(eid)==0: 
+      return render_template("error.html")
+    if bg_noise == "Blank" or bg_music == "Blank" or seating == "Blank" or atmosphere == "Blank" or lighting == "Blank":
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT MAX(rid)+1 FROM Ratings_About_Submitted')
+    newrid = []
+    for result in cursor:
+      newrid.append(result[0])
+    if len(newrid) == 0:
+      rid = 1
+    else:
+      rid = newrid[0]
+    cursor = g.conn.execute('SELECT * FROM Ratings_About_Submitted WHERE username =%s AND eid =%s', (username, eid[0]))
+    results = []
+    for result in cursor:
+      results.append(result[0])
+    if len(results) >0:
+      return render_template("error.html")
+    cursor = g.conn.execute('INSERT INTO Ratings_About_Submitted VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (rid, bg_noise, bg_music, seating, atmosphere, lighting, eid[0], username))
+    cursor.close()
+    return redirect("/") #render_template("index.html")
 
 @app.route('/comment_eatery/', methods = ['GET','POST'])
 def comment_eatery():
@@ -333,8 +364,11 @@ def comment_eatery():
   elif request.method == 'POST':
     username = request.form['comment_eatery_username']
     eatery = request.form['comment_eatery_eatery']
+    location = request.form['comment_eatery_location']
+    if len(location.strip()) == 0:
+      return render_template("error.html")
     content = request.form['comment_eatery_comment']
-    cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
+    cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s AND location = %s', (eatery,location))
     eid = []
     for result in cursor:
       eid.append(result[0])
@@ -381,7 +415,7 @@ def search_to_try_list():
     cursor = g.conn.execute("SELECT Eateries.name FROM Eateries, To_Try_List WHERE To_Try_List.eid = Eateries.eid AND To_Try_List.username = %s", username)
     names = []
     for result in cursor:
-      names.append(result['name'])  # can also be accessed using result[0]
+      names.append(result['name']) 
     cursor.close()
     if len(names) == 0:
       return render_template("error.html")
@@ -439,7 +473,7 @@ def add_user():
     username = request.form['username']
     affiliation = request.form['affiliation']
     biography = request.form['bio']
-    
+
     if affiliation == 'Blank':
       return render_template("error.html")
     if len(biography.strip()) == 0:
@@ -451,8 +485,6 @@ def add_user():
       return redirect("/")
     except:
       return render_template("error.html")
-
-
 
 
 if __name__ == "__main__":
