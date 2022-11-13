@@ -182,32 +182,45 @@ def search_eatery_food():
 
 
 
-@app.route('/add_to_try_list/', methods = ['POST'])
+@app.route('/add_to_try_list/', methods = ['POST', 'GET'])
 def add_to_try_list():
-  username = request.form['add_to_try_username']
-  eatery = request.form['add_to_try_eatery']
-  cursor = g.conn.execute('SELECT DISTINCT tid FROM To_Try_List WHERE username = %s', (username))
-  tid = []
-  for result in cursor:
-    tid.append(result[0])
-  if len(tid)==0:
-    cursor = g.conn.execute('SELECT MAX(tid)+1 FROM To_Try_List')
-    newtid = []
+  if request.method == 'GET':
+    return render_template("index.html")
+  elif request.method == 'POST':
+    username = request.form['add_to_try_username']
+    cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
+    usernames = []
     for result in cursor:
-      newtid.append(result[0])
-    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
-    eid = []
+      usernames.append(result[0])
+    if len(usernames) == 0:
+      return render_template("error.html")
+    eatery = request.form['add_to_try_eatery']
+    cursor = g.conn.execute('SELECT DISTINCT tid FROM To_Try_List WHERE username = %s', (username))
+    tid = []
     for result in cursor:
-      eid.append(result[0])
-    cursor = g.conn.execute('INSERT INTO To_Try_List VALUES (%s, %s, %s)',(newtid[0],eid[0], username))
-  else:
-    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
-    eid = []
-    for result in cursor:
-      eid.append(result[0])
-    cursor = g.conn.execute('INSERT INTO To_Try_List VALUES (%s, %s, %s)',(tid[0],eid[0], username))
-  cursor.close()
-  return redirect("/")#render_template("index.html")
+      tid.append(result[0])
+    if len(tid)==0:
+      cursor = g.conn.execute('SELECT MAX(tid)+1 FROM To_Try_List')
+      newtid = []
+      for result in cursor:
+        newtid.append(result[0])
+      cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+      eid = []
+      for result in cursor:
+        eid.append(result[0])
+      if len(eid) == 0:
+        return render_template("error.html")
+      cursor = g.conn.execute('INSERT INTO To_Try_List VALUES (%s, %s, %s)',(newtid[0],eid[0], username))
+    else:
+      cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+      eid = []
+      for result in cursor:
+        eid.append(result[0])
+      if len(eid) == 0:
+        return render_template("error.html")
+      cursor = g.conn.execute('INSERT INTO To_Try_List VALUES (%s, %s, %s)',(tid[0],eid[0], username))
+    cursor.close()
+    return redirect("/")#render_template("index.html")
 
 @app.route('/add_item/', methods = ['POST']) 
 def add_item():
@@ -372,25 +385,6 @@ def add_user():
       return render_template("error.html")
 
 
-@app.route('/another')
-def another():
-  return render_template("anotherfile.html")
-
-
-# Example of adding new data to the database
-@app.route('/add', methods=['POST'])
-def add():
-  name = request.form['name']
-  print name
-  cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
-  g.conn.execute(text(cmd), name1 = name, name2 = name);
-  return redirect('/')
-
-
-@app.route('/login')
-def login():
-    abort(401)
-    this_is_never_executed()
 
 
 if __name__ == "__main__":
