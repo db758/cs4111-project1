@@ -251,7 +251,15 @@ def rate_item():
   item = request.form['rate_item_food']
   eatery = request.form['rate_item_eatery']
   rating = request.form['rate_item_rating']
+  if rating == 'Blank':
+    return render_template("error.html")
   username = request.form['rate_item_username']
+  cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
+  usernames = []
+  for result in cursor:
+    usernames.append(result[0])
+  if len(usernames) ==0:
+    return render_template("error.html")
   cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
   eid = []
   for result in cursor:
