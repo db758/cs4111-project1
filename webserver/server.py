@@ -326,27 +326,39 @@ def rate_eatery():
   cursor.close()
   return redirect("/") #render_template("index.html")
 
-@app.route('/comment_eatery/', methods = ['POST'])
+@app.route('/comment_eatery/', methods = ['GET','POST'])
 def comment_eatery():
-  username = request.form['comment_eatery_username']
-  eatery = request.form['comment_eatery_eatery']
-  content = request.form['comment_eatery_comment']
-  cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
-  eid = []
-  for result in cursor:
-    eid.append(result[0])
-  if len(eid)==0: 
-    return render_template("/")
-  cursor = g.conn.execute('SELECT MAX(cid)+1 FROM Comments_Submitted_C')
-  newcid = []
-  for result in cursor:
-    newcid.append(result[0])
-  cid = newcid[0]
-  cursor = g.conn.execute('INSERT INTO Comments_Submitted_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, username))
-  cursor = g.conn.execute('INSERT INTO Comments_About_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, eid[0]))
-  cursor.close()
-  return redirect("/")#render_template("index.html")
-
+  if request.method == 'GET':
+    return render_template("index.html");
+  elif request.method == 'POST':
+    username = request.form['comment_eatery_username']
+    eatery = request.form['comment_eatery_eatery']
+    content = request.form['comment_eatery_comment']
+    cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+    if len(eid)==0: 
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT MAX(cid)+1 FROM Comments_Submitted_C')
+    newcid = []
+    for result in cursor:
+      newcid.append(result[0])
+    if len(newcid)==0: 
+      return render_template("error.html")
+    cid = newcid[0]
+    if len(content.strip()) == 0:
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT A.eid, B.username FROM Comments_About_C as A,  Comments_Submitted_C as B WHERE B.username =%s AND A.eid =%s AND A.cid = B.cid', (username, eid[0]))
+    results = []
+    for result in cursor:
+      results.append(result[0])
+    if len(results) >0:
+      return render_template("error.html")
+    cursor = g.conn.execute('INSERT INTO Comments_Submitted_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, username))
+    cursor = g.conn.execute('INSERT INTO Comments_About_C VALUES (%s, %s, DEFAULT, %s)', (cid, content, eid[0]))
+    cursor.close()
+    return redirect("/")#render_template("index.html")
 
 @app.route('/search_to_try_list/', methods=['GET','POST'])
 def search_to_try_list():
@@ -385,7 +397,19 @@ def add_eatery():
 
   if request.method == 'POST':
     username = request.form['username']
+    cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
+    results = []
+    for result in cursor:
+      results.append(result[0])
+    if len(results) ==0:
+      return render_template("error.html")
     eatery_name = request.form['eatery_name']
+    cursor = g.conn.execute('SELECT name FROM Eateries WHERE name=%s', (eatery_name))
+    results = []
+    for result in cursor:
+      results.append(result[0])
+    if len(results) ==0:
+      return render_template("error.html")
     is_open = request.form['is_open']
     location = request.form['location']
     is_indoor = request.form['is_indoor']
@@ -394,11 +418,16 @@ def add_eatery():
     seating = request.form['seating']
     bathroom = request.form['bathroom']
 
-    cursor = g.conn.execute("INSERT INTO Eateries VALUES(DEFAULT, %s, %s, %s, %s, %s, %s, %s, %s)", (eatery_name, is_open, location, is_indoor, hours, e_type, seating, bathroom))
-    cursor.close()
-
-    return redirect("/") #render_template("index.html")
-
+    if is_open == 'Blank' or is_indoor == 'Blank' or hours == 'Blank' or e_type == 'Blank' or bathroom == 'Blank':
+      return render_template("error.html")
+    if len(location.strip()) == 0 or len(hours.strip()) == 0 or len(seating.strip()) == 0:
+      return render_template("error.html")
+    try:
+      cursor = g.conn.execute("INSERT INTO Eateries VALUES(DEFAULT, %s, %s, %s, %s, %s, %s, %s, %s)", (eatery_name, is_open, location, is_indoor, hours, e_type, seating, bathroom))
+      cursor.close()
+      return redirect("/")
+    except:
+      return render_template("error.html")
 
 @app.route('/add_user/', methods = ['GET', 'POST'])
 def add_user():
@@ -410,12 +439,16 @@ def add_user():
     username = request.form['username']
     affiliation = request.form['affiliation']
     biography = request.form['bio']
+    
+    if affiliation == 'Blank':
+      return render_template("error.html")
+    if len(biography.strip()) == 0:
+      return render_template("error.html")
 
     try:
       cursor = g.conn.execute("INSERT INTO Users VALUES(%s, %s, DEFAULT, %s)", (username, affiliation, biography))
       cursor.close()
-
-      return redirect("/") #render_template("index.html")
+      return redirect("/")
     except:
       return render_template("error.html")
 
