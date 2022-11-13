@@ -104,7 +104,10 @@ def search_eatery():
     cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s', ('%'+eatery_name+'%'))
   # 3. Both
   else:
-    cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s JOIN (SELECT * FROM Contains, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid) ON eid', ('%'+eatery_name+'%',tag))
+    try:
+      cursor = g.conn.execute('SELECT * FROM Eateries WHERE name LIKE %s JOIN (SELECT * FROM Contains, Eateries WHERE Contain.label = %s and Contain.eid = Eateries.eid) ON eid', ('%'+eatery_name+'%',tag))
+    except:
+      return render_template("error.html")
   names = []
   headings = ("Eatery name","Is open?","Location","Indoor/Outdoor","Hours","Eatery type","Number of seats","Restrooms")
   #names.append(headings)
