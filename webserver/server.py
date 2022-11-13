@@ -114,6 +114,8 @@ def search_eatery():
   for result in cursor:
     names.append(result[1:])  # can also be accessed using result[0]
   cursor.close()
+  if len(names)==0:
+    return render_template("error.html")
   context = dict(eateries=names,headings=headings)
   return render_template("index.html", **context)
 
@@ -321,7 +323,8 @@ def search_to_try_list():
     for result in cursor:
       names.append(result['name'])  # can also be accessed using result[0]
     cursor.close()
-  
+    if len(names) == 0:
+      return render_template("error.html")
     context = dict(data = names)
   return render_template("index.html", **context) # index.html?
 
