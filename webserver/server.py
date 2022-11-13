@@ -239,10 +239,12 @@ def add_item():
     iid.append(result[0])
   if iid[0] == None:
     iid[0] = 1  
-  
-  cursor = g.conn.execute('INSERT INTO Items_Sold VALUES (%s, %s, %s, %s)',(iid[0],price,item,eid[0]))
-  cursor.close()
-  return redirect("/") #render_template("index.html")
+  try:
+    cursor = g.conn.execute('INSERT INTO Items_Sold VALUES (%s, %s, %s, %s)',(iid[0],price,item,eid[0]))
+    cursor.close()
+    return redirect("/") #render_template("index.html")
+  except:
+    return render_template("error.html")
 
 @app.route('/rate_item/', methods = ['POST'])
 def rate_item():
