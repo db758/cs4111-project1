@@ -121,12 +121,11 @@ def search_eatery():
 @app.route('/search_eatery_rating/', methods = ['POST'])
 def search_eatery_rating():
   eatery = request.form['search_eatery_rating']
-  try:
-    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
-    eid = []
-    for result in cursor:
-      eid.append(result[0])
-  except:
+  cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+  eid = []
+  for result in cursor:
+    eid.append(result[0])
+  if len(eid)==0: 
     return render_template("error.html")
   cursor = g.conn.execute('SELECT AVG(seating), AVG(atmosphere), AVG(natural_lighting) FROM Ratings_About_Submitted WHERE eid=%s', (eid[0]))
 
@@ -143,12 +142,11 @@ def search_eatery_rating():
 @app.route('/search_eatery_comment/', methods = ['POST'])
 def search_eatery_comment():
   eatery = request.form['search_eatery_comment']
-  try:
-    cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
-    eid = []
-    for result in cursor:
-      eid.append(result[0])
-  except:
+  cursor = g.conn.execute('SELECT eid FROM Eateries WHERE name = %s',(eatery))
+  eid = []
+  for result in cursor:
+    eid.append(result[0])
+  if len(eid)==0:
     return render_template("error.html")
   cursor = g.conn.execute('SELECT A.content, B.username, A.when_commented FROM Comments_About_C as A, Comments_Submitted_C as B WHERE eid=%s AND A.cid = B.cid', (eid[0]))
 
@@ -164,12 +162,11 @@ def search_eatery_comment():
 @app.route('/search_eatery_food/', methods = ['POST'])
 def search_eatery_food():
   eatery = request.form['search_eatery_food']
-  try:
-    cursor = g.conn.execute('SELECT eid from Eateries WHERE name=%s', (eatery))
-    eid = []
-    for result in cursor:
-      eid.append(result[0])
-  except:
+  cursor = g.conn.execute('SELECT eid from Eateries WHERE name=%s', (eatery))
+  eid = []
+  for result in cursor:
+    eid.append(result[0])
+  if len(eid)==0:
     return render_template("error.html")
   cursor = g.conn.execute('SELECT Items_Sold.name, Items_Sold.price, AVG(Rate.rating) FROM Items_Sold, Rate WHERE Items_Sold.eid = %s AND Items_Sold.eid=Rate.eid AND Items_Sold.iid = Rate.iid GROUP BY Rate.iid, Rate.eid, Items_Sold.name, Items_Sold.price' , (eid[0]))
 
