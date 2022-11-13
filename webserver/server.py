@@ -308,7 +308,15 @@ def rate_eatery():
     return render_template("error.html")
   if bg_noise == "Blank" or bg_music == "Blank" or seating == "Blank" or atmosphere == "Blank" or lighting == "Blank":
     return render_template("error.html")
-  cursor = g.conn.execute('INSERT INTO Ratings_About_Submitted VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, %s)', (bg_noise, bg_music, seating, atmosphere, lighting, eid[0], username))
+  cursor = g.conn.execute('SELECT MAX(rid)+1 FROM Ratings_About_Submitted')
+  newrid = []
+  for result in cursor:
+    newrid.append(result[0])
+  if len(newrid) == 0:
+    rid = 1
+  else:
+    rid = newrid[0]
+  cursor = g.conn.execute('INSERT INTO Ratings_About_Submitted VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (rid, bg_noise, bg_music, seating, atmosphere, lighting, eid[0], username))
   cursor.close()
   return redirect("/") #render_template("index.html")
 
