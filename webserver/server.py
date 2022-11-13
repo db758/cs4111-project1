@@ -288,6 +288,12 @@ def rate_item():
 @app.route('/rate_eatery/', methods = ['POST'])
 def rate_eatery():
   username = request.form['rate_eatery_username']
+  cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
+  usernames = []
+  for result in cursor:
+    usernames.append(result[0])
+  if len(usernames) ==0:
+    return render_template("error.html")
   eatery = request.form['rate_eatery_eatery']
   bg_noise = request.form['rate_background_noise']
   bg_music = request.form['rate_background_music']
@@ -299,7 +305,9 @@ def rate_eatery():
   for result in cursor:
     eid.append(result[0])
   if len(eid)==0: 
-    return render_template("/")
+    return render_template("error.html")
+  if bg_noise == "Blank" or bg_music == "Blank" or seating == "Blank" or atmosphere == "Blank" or lighting == "Blank":
+    return render_template("error.html")
   cursor = g.conn.execute('INSERT INTO Ratings_About_Submitted VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, %s)', (bg_noise, bg_music, seating, atmosphere, lighting, eid[0], username))
   cursor.close()
   return redirect("/") #render_template("index.html")
