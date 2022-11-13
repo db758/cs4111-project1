@@ -185,7 +185,7 @@ def search_eatery_food():
 @app.route('/add_to_try_list/', methods = ['POST', 'GET'])
 def add_to_try_list():
   if request.method == 'GET':
-    return redirect("/")
+    return render_template("index.html")
   elif request.method == 'POST':
     username = request.form['add_to_try_username']
     cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
@@ -249,7 +249,7 @@ def add_item():
 @app.route('/rate_item/', methods = ['POST', 'GET'])
 def rate_item():
   if request.method == 'GET':
-    return redirect("/")
+    return render_template("index.html")
   else:
     item = request.form['rate_item_food']
     eatery = request.form['rate_item_eatery']
