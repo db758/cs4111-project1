@@ -185,7 +185,7 @@ def search_eatery_food():
 @app.route('/add_to_try_list/', methods = ['POST', 'GET'])
 def add_to_try_list():
   if request.method == 'GET':
-    return render_template("index.html")
+    return redirect("/")
   elif request.method == 'POST':
     username = request.form['add_to_try_username']
     cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
@@ -246,41 +246,44 @@ def add_item():
   except:
     return render_template("error.html")
 
-@app.route('/rate_item/', methods = ['POST'])
+@app.route('/rate_item/', methods = ['POST', 'GET'])
 def rate_item():
-  item = request.form['rate_item_food']
-  eatery = request.form['rate_item_eatery']
-  rating = request.form['rate_item_rating']
-  if rating == 'Blank':
-    return render_template("error.html")
-  username = request.form['rate_item_username']
-  cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
-  usernames = []
-  for result in cursor:
-    usernames.append(result[0])
-  if len(usernames) ==0:
-    return render_template("error.html")
-  cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
-  eid = []
-  for result in cursor:
-    eid.append(result[0])
-  if len(eid)==0: 
-    return render_template("error.html")
+  if request.method == 'GET':
+    return redirect("/")
   else:
-    cursor = g.conn.execute('SELECT iid FROM Items_Sold WHERE eid = %s AND name = %s', (eid[0], item))
-    iid = []
+    item = request.form['rate_item_food']
+    eatery = request.form['rate_item_eatery']
+    rating = request.form['rate_item_rating']
+    if rating == 'Blank':
+      return render_template("error.html")
+    username = request.form['rate_item_username']
+    cursor = g.conn.execute('SELECT username FROM Users WHERE username=%s', (username))
+    usernames = []
     for result in cursor:
-      iid.append(result[0])
-    if len(iid)==0:
+      usernames.append(result[0])
+    if len(usernames) ==0:
+      return render_template("error.html")
+    cursor = g.conn.execute('SELECT DISTINCT eid FROM Eateries WHERE name = %s', (eatery))
+    eid = []
+    for result in cursor:
+      eid.append(result[0])
+    if len(eid)==0: 
       return render_template("error.html")
     else:
-      try:
-        cursor = g.conn.execute('INSERT INTO Rate VALUES (%s, %s, %s, %s)', (username, eid[0], iid[0], rating))
-        # need to check for uniqueness
-        cursor.close()
-        return redirect("/")
-      except:
+      cursor = g.conn.execute('SELECT iid FROM Items_Sold WHERE eid = %s AND name = %s', (eid[0], item))
+      iid = []
+      for result in cursor:
+        iid.append(result[0])
+      if len(iid)==0:
         return render_template("error.html")
+      else:
+        try:
+          cursor = g.conn.execute('INSERT INTO Rate VALUES (%s, %s, %s, %s)', (username, eid[0], iid[0], rating))
+          # need to check for uniqueness
+          cursor.close()
+          return redirect("/")
+        except:
+          return render_template("error.html")
 
 @app.route('/rate_eatery/', methods = ['POST'])
 def rate_eatery():
