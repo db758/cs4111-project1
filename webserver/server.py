@@ -316,6 +316,12 @@ def rate_eatery():
     rid = 1
   else:
     rid = newrid[0]
+  cursor = g.conn.execute('SELECT * FROM Ratings_About_Submitted WHERE username =%s AND eid =%s', (username, eid[0]))
+  results = []
+  for result in cursor:
+    results.append(result[0])
+  if len(results) >0:
+    return render_template("error.html")
   cursor = g.conn.execute('INSERT INTO Ratings_About_Submitted VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (rid, bg_noise, bg_music, seating, atmosphere, lighting, eid[0], username))
   cursor.close()
   return redirect("/") #render_template("index.html")
